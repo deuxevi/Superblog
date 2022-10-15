@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} Accueil du blog {% endblock %}
+
+{% block content %}
+
+    <h1>le superBlog</h1>
+    {% if not articles %}
+        <h2>Pas d'article</h2>
+    {%else%}
+        {% for article in articles %}
+            <article>
+                <h2>{{ article.title }}</h2>
+                <h5>Publié par <i>{{ article.author.username }}</i> le {{ article.date_pub|date:'j F Y' }}</h5>
+                <p>{{ article.contenu|safe|truncatewords:50 }}</p>
+            </article>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

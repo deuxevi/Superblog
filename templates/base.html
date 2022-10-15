@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load static%}
+<html>
+<head>
+	<link rel="stylesheet" href="{% static 'utilisateur/css/style.css' %}">
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{%block title%} {%endblock%}</title>
+</head>
+<body>
+	<header>
+		<h1>SuperBlog</h1>
+
+		{% if user.is_authenticated%}
+		<p>Vous etes connecte en tant que {{request.user}}. <a href="{% url 'logout'%}">Se deconnecter</a></p>
+	{%else%}
+		<p><a href="{% url 'user:login'%}">Connectez-vous</a></p>
+	{%endif%}
+		
+	</header>
+	
+	<section id="blod">
+		{%block content%} {%endblock%}
+	</section>
+	
+
+	<footer>
+		<p>Contatez nous:</p>
+		
+	</footer>
+
+</body>
+</html>
