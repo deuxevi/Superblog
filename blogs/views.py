@@ -38,3 +38,10 @@ class DetailArticle(DetailView):
 class DeleteArticle(DeleteView):
 	model = blog.Articles
 	succes_url = reverse_lazy('blog:home')
+
+
+
+class AddComment(CreateView):
+	model = blog.Comments
+	template_name = "blogs/comment_add.html"
+	fields = ["contenu"]

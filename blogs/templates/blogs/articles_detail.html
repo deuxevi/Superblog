@@ -7,6 +7,7 @@
 {% block content %}
     <article>
         <h1>{{ article.title }}</h1>
-        <div>{{article.content|linebreaks|safe }}</div>
+        <div>{{article.contenu|linebreaks|safe }}</div>
+        <a href="{%url 'blog:comment'%}">Ajouter un commentaire</a>
     </article>
 {% endblock %}
