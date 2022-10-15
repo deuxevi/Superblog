@@ -12,14 +12,20 @@
 		<h1>SuperBlog</h1>
 
 		{% if user.is_authenticated%}
-		<p>Vous etes connecte en tant que {{request.user}}. <a href="{% url 'logout'%}">Se deconnecter</a></p>
-	{%else%}
-		<p><a href="{% url 'user:login'%}">Connectez-vous</a></p>
-	{%endif%}
+			<p>Vous etes connecte en tant que {{request.user}}. <a href="{% url 'user:logout'%}">Se deconnecter</a></p>
+		{%else%}
+			<p><a href="{% url 'user:login'%}">Connectez-vous</a></p>
+		{%endif%}
+
+		{%if user.is_authenticated and user.is_createur%}
+			<nav>
+				<a href="{% url 'blog:add' %}">Ajouter un article</a>
+			</nav>
+		{%endif%}
 		
 	</header>
 	
-	<section id="blod">
+	<section id="blog">
 		{%block content%} {%endblock%}
 	</section>
 	

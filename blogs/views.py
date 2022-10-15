@@ -20,7 +20,7 @@ class BlogHome(ListView):
 class CreateArticle(CreateView):
 	model = blog.Articles
 	template_name = "blogs/article_create.html"
-	fields = ["title", 'theme', 'contenu'] 
+	fields = ["title", 'theme', 'contenu', 'published'] 
 
 
 

@@ -9,7 +9,7 @@
 		{{form.as_p}}
 		{%csrf_token%}
 		<button type="submit"> Se connecter</button>
-    <p><a href="{% url 'inscription' %}">Inscrivez-vous maintenant !</a></p>
+    <p><a href="{% url 'user:inscription' %}">Inscrivez-vous maintenant !</a></p>
 	</form>
 
 {%endblock content%}

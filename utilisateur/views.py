@@ -16,6 +16,7 @@ def login_page(request):
 			else:
 				login(request,user)
 				message = f'Bonjour {user.username}! Vous etes connecte.'
+				return redirect('blog:home')
 
 	return render (request, 'utilisateur/login.html', {'form':form, 'message':message})
 
@@ -25,15 +26,15 @@ def inscription(request):
 		form = forms.InscriptionForm(request.POST)
 		if form.is_valid():
 			user = form.save()
-			return redirect('login')
+			login(request,user)
+			return redirect('blog:home')
 	else:
 		form = forms.InscriptionForm()
 	return render(request,'utilisateur/inscription.html', {'form' : form})
 
 
-def main(request):
-	return render(request,'utilisateur/main.html')
+
 
 def logout_user(request):
 	logout(request)
-	return redirect('login')
+	return redirect('blog:home')
