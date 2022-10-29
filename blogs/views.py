@@ -1,9 +1,14 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
+import operator
+from functools import reduce
+from django.db.models import Q
 
 import utilisateur.models as user
 import blogs.models as blog
+import blogs.forms as forms
 
 
 class BlogHome(ListView):
@@ -13,14 +18,46 @@ class BlogHome(ListView):
 	def get_queryset(self):
 		queryset = super().get_queryset()
 		if self.request.user.is_authenticated and self.request.user.role == 'Créateur':
-			return queryset
+			return queryset.filter
 
 		return queryset.filter(published=True)
 
-class CreateArticle(CreateView):
+class BlogArticles(ListView):
+	model = blog.Articles
+	context_object_name = "articles"
+
+	def get_queryset(self):
+		queryset = super().get_queryset()
+
+		return queryset.filter(author=self.request.user).filter(published=True)
+
+class Brouillons(ListView):
+	model = blog.Articles
+	context_object_name = "articles"
+
+	def get_queryset(self):
+		queryset = super().get_queryset()
+
+		return queryset.filter(author=self.request.user).filter(published=False)
+
+class Enregistrements(ListView):
+	model = blog.Enregistrements
+	context_object_name = "articles"
+
+	def get_queryset(self):
+		queryset = super().get_queryset()
+
+		return queryset.filter(owner=self.request.user)
+			
+
+class CreateArticle(LoginRequiredMixin, CreateView):
 	model = blog.Articles
 	template_name = "blogs/article_create.html"
-	fields = ["title", 'theme', 'contenu', 'published'] 
+	fields = ["title", 'theme', 'contenu', 'published']
+
+	def form_valid(self, form):
+		form.instance.author = self.request.user
+		return super().form_valid(form)
 
 
 
@@ -34,6 +71,24 @@ class DetailArticle(DetailView):
 	model = blog.Articles
 	context_object_name = "article"
 
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["commentForm"] = forms.CommentForm()
+		context["likeForm"] = forms.LikeForm()
+		context["enregistrementForm"] = forms.EnregistrementForm()
+		context["comments"] = blog.Comments.objects.filter(article=self.object)
+		context["likes"] =blog.Likes.objects.filter(article=self.object).count()
+		return context
+
+
+	def post(self,request, slug):
+		form = forms.CommentForm(request.POST)
+		if form.is_valid():
+			form.instance.internaute = self.request.user
+			form.instance.article=blog.Articles.objects.get(slug=slug)
+			form.save()
+
+			return redirect('blog:detail')
 
 class DeleteArticle(DeleteView):
 	model = blog.Articles
@@ -41,7 +96,40 @@ class DeleteArticle(DeleteView):
 
 
 
-class AddComment(CreateView):
+class AddComment(LoginRequiredMixin, CreateView):
 	model = blog.Comments
-	template_name = "blogs/comment_add.html"
+	template_name = "blogs/articles_detail.html"
 	fields = ["contenu"]
+
+	def form_valid(self, form):
+		form.instance.internaute = self.request.user
+		#form.instance.article = blog.Comments.objects.get(slug=)
+		return super().form_valid(form)
+
+class AddLike(LoginRequiredMixin, CreateView):
+	model = blog.Likes
+	template_name = "blogs/like_add.html"
+	
+
+
+
+class ArticleSearch(ListView):
+    model = blog.Articles
+    context_object_name = "articles"
+    template_name = "articles_list.html"
+    paginate_by = 10
+
+    def get_queryset(self):
+        result = super(ArticleSearch, self).get_queryset()
+
+        query = self.request.GET.get('q')
+        if query:
+            query_list = query.split()
+            result = result.filter(
+                reduce(operator.and_,
+                       (Q(title__icontains=q) for q in query_list)) |
+                reduce(operator.and_,
+                       (Q(contenu__icontains=q) for q in query_list))
+            )
+
+        return result

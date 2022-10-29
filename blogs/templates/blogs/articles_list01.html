@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %} Accueil du blog {% endblock %}
+
+{% block content %}
+
+    
+
+        <!-- main -->
+    <main class="pt-12 bg-gray-100 pb-12">
+        <h1>le superBlog</h1>
+        <div class="container mx-auto px-4 flex flex-wrap lg:flex-nowrap">
+            <!-- left sidebar -->
+            <div class="w-3/12 hidden xl:block">
+                <!-- categories -->
+                <div class="w-full bg-white shadow-sm rounded-sm p-4 ">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3 font-roboto">Categories</h3>
+                    <div class="space-y-2">
+
+                        <!-- un boucle for pour ennumerer tous les themes possible-->
+                        <a href="#"
+                            class="flex leading-4 items-center text-gray-700 font-semibold text-sm uppercase transition hover:text-blue-500">
+                            <span class="mr-2">
+                                <i class="far fa-folder-open"></i>
+                            </span>
+                            <span>Beauti</span>
+                            <p class="ml-auto font-normal">(12)</p>
+                        </a>
+                        <!--fin de la boucle-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="w-full mt-8 bg-white shadow-sm rounded-sm p-4 ">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-3 font-roboto">Les derniers articles</h3>
+                    {% if not articles %}
+                        <h4>Pas d'article</h4>
+                    {%else%}
+                    <div class="space-y-4">
+                        {% for article in articles %}
+                            <a href="{% url 'blog:detail' slug=article.slug %}" class="flex group">
+                                <div class="flex-shrink-0">
+                                    <!--img src="src/images/img-1.jpg" class="h-14 w-20 rounded object-cover"-->
+                                </div>
+                                <div class="flex-grow pl-3">
+                                    <h5
+                                        class="text-md leading-5 block font-roboto font-semibold  transition group-hover:text-blue-500">
+                                       {{ article.title }}
+                                    </h5>
+                                    <div class="flex text-gray-400 text-sm items-center">
+                                        <span class="mr-1 text-xs"><i class="far fa-clock"></i></span>
+                                       {{ article.contenu|safe|truncatewords:50 }}
+                                    </div>
+                                    <div class="flex text-gray-400 text-sm items-center">
+                                        <span class="mr-1 text-xs"><i class="far fa-clock"></i></span>
+                                        Publié par <i>{{ article.author }}</i> le {{ article.date_pub|date:'j F Y' }}
+                                    </div>
+                                </div>
+                            </a>
+                            {% endfor %}
+                    {% endif %}
+
+{% endblock %}
+
+
+
+    
+    
+            <!--
+                 if request.user.is_authenticated
+                    <a href="{% url 'blog:edit' slug=article.slug %}">Éditer</a>
+                    <a href="{% url 'blog:delete' slug=article.slug %}">Supprimer</a>
+                endif
+      -->

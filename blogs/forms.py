@@ -1,17 +1,19 @@
-from django import forms
 from django.forms import ModelForm
-from utilisateur.models import User
-from blogs.models import *
+from blogs.models import Comments, Enregistrements, Likes
 
 
+class CommentForm(ModelForm):
+	class Meta:
+		model = Comments
+		fields = ['contenu']
 
-class ArticlesForm(ModelForm):
-	class Meta():
-		model = Articles
-		fields=('title', 'contenu', 'theme')
 
+class EnregistrementForm(ModelForm):
+	class Meta:
+		model = Enregistrements
+		fields=['status']
 
-class CommentsForm(ModelForm):
-	class Meta():
-		model=Comments
-		fields=('contenu')
+class LikeForm(ModelForm):
+	class Meta:
+		model = Likes
+		fields = ['status']

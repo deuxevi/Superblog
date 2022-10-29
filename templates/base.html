@@ -1,39 +1,29 @@
 <!DOCTYPE html>
 {% load static%}
+{% load tailwind_tags %}
+{%load crispy_forms_tags %} 
 <html>
 <head>
+	{% tailwind_css %}
 	<link rel="stylesheet" href="{% static 'utilisateur/css/style.css' %}">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{%block title%} {%endblock%}</title>
 </head>
-<body>
-	<header>
-		<h1>SuperBlog</h1>
-
-		{% if user.is_authenticated%}
-			<p>Vous etes connecte en tant que {{request.user}}. <a href="{% url 'user:logout'%}">Se deconnecter</a></p>
-			<nav>
-				<a href="{% url 'blog:home'%}">Acceuil</a><br>
-				<a href="{% url 'blog:add' %}">Ajouter un article</a>
-			</nav>
-		{%else%}
-			<p><a href="{% url 'user:login'%}">Connectez-vous</a></p>
-		{%endif%}
-
-			
+<body class="bg-gray-50 font-serif leading-normal tracking-normal">
+	<div class="container mx-auto">
 		
-	</header>
+		{%include 'nav.html'%}
 	
-	<section id="blog">
+		<section id="blog" class="flex items-center justify-center h-screen">
 		{%block content%} {%endblock%}
-	</section>
+		</section>
 	
 
-	<footer>
-		<p>Contatez nous:</p>
-		
-	</footer>
+		<footer class="border-t py-4">
+        	<p class=" text-sm text-center">Copyright © 2022 <span class="font-semibold">SuperBlog</span>
+            All Rights Reserved</p>
+    	</footer>
 
-</body>
+	</body>
 </html>

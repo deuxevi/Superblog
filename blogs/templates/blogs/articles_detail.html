@@ -1,13 +1,48 @@
 {% extends 'base.html' %}
+{%load crispy_forms_tags %} 
 
 {% block title %}
     {{ article.title }}
 {% endblock %}
 
 {% block content %}
-    <article>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 card mb-4  mt-3 left  top">
+      <div class="card-body">
         <h1>{{ article.title }}</h1>
-        <div>{{article.contenu|linebreaks|safe }}</div>
-        <a href="{%url 'blog:comment'%}">Ajouter un commentaire</a>
-    </article>
+        <p class=" text-muted">{{ article.author }} | {{ article.date_pub|date:'j F Y' }} aime par {{likes}} internaute(s)</p>
+        <p class="mb-3 font-light text-gray-500 dark:text-gray-400 ">{{article.contenu|linebreaks|safe }}</p>
+
+
+                            
+{% if user.is_authenticated%}
+     <h1>Ajouter un commentaire</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ commentForm|crispy }}
+        
+        <button type="submit">Envoyer</button>
+    </form>
+    <br><p>{{likeForm|crispy}}</p><br><p>{{enregistrementForm|crispy}}</p>
+    {%else%}    
+                <div class="lg:ml-5 ml-auto">
+                    <a href="{% url 'user:login'%}"
+                        class=" text-sm  font-semibold hover:text-blue-500 transition flex items-center">
+                        <span class="mr-2">
+                            <i class="far fa-user"></i>
+                        </span>
+                        Connectez-vous pour laisser un commentaire</a>
+                </div>
+            {%endif%}
+                {% for comment in comments %}
+                    <p>{{comment}}</p><br>
+                {%empty%}
+                    <p>Pas de commentaire</p>
+                {%endfor%}
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

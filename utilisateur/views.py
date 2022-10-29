@@ -38,3 +38,6 @@ def inscription(request):
 def logout_user(request):
 	logout(request)
 	return redirect('blog:home')
+
+def profil(request):
+	return render (request, 'utilisateur/profil.html')
