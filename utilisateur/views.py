@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
+from django.views.generic import UpdateView
 
 from . import forms
 from . import models
@@ -41,3 +42,8 @@ def logout_user(request):
 
 def profil(request):
 	return render (request, 'utilisateur/profil.html')
+
+class UpdateUser(UpdateView):
+	model = models.User
+	template_name = "utilisateur/user_edit.html"
+	fields = ['username', 'email', 'first_name', 'last_name']

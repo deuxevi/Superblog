@@ -1,10 +1,12 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 import operator
 from functools import reduce
 from django.db.models import Q
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 import utilisateur.models as user
 import blogs.models as blog
@@ -40,14 +42,14 @@ class Brouillons(ListView):
 
 		return queryset.filter(author=self.request.user).filter(published=False)
 
-class Enregistrements(ListView):
+"""class Enregistrements(ListView):
 	model = blog.Enregistrements
 	context_object_name = "articles"
 
 	def get_queryset(self):
 		queryset = super().get_queryset()
 
-		return queryset.filter(owner=self.request.user)
+		return queryset.filter(owner=self.request.user)"""
 			
 
 class CreateArticle(LoginRequiredMixin, CreateView):
@@ -55,9 +57,28 @@ class CreateArticle(LoginRequiredMixin, CreateView):
 	template_name = "blogs/article_create.html"
 	fields = ["title", 'theme', 'contenu', 'published']
 
+	"""def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context["photoForm"] = forms.PhotoForm()
+
+		return context
+
+	def post(self, request, slug):
+		photoForm = forms.PhotoForm(request.POST, request.FILES)
+		articleForm = self.form(request.POST)
+		if photoform.is_valid():
+			photo = photoForm.save(commit=False)
+            # set the uploader to the user before saving the model
+			photo.uploader = request.user
+            # now we can save
+			photo.save()
+			articleForm.instance.photo = photo
+			articleForm.save()
+
+
 	def form_valid(self, form):
 		form.instance.author = self.request.user
-		return super().form_valid(form)
+		return super().form_valid(form)"""
 
 
 
@@ -73,11 +94,18 @@ class DetailArticle(DetailView):
 
 	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
+		article = blog.Articles.objects.get(slug=self.kwargs['slug'])
+		liked = False
+		saved = False
+		if article.likes.filter(id=self.request.user.id).exists():
+			liked = True
+		if article.enregistrements.filter(id=self.request.user.id).exists():
+			saved = True
 		context["commentForm"] = forms.CommentForm()
-		context["likeForm"] = forms.LikeForm()
-		context["enregistrementForm"] = forms.EnregistrementForm()
+		context["saved"] = saved
 		context["comments"] = blog.Comments.objects.filter(article=self.object)
-		context["likes"] =blog.Likes.objects.filter(article=self.object).count()
+		context["likes"] =article.nb_likes()
+		context["liked"] = liked
 		return context
 
 
@@ -88,7 +116,7 @@ class DetailArticle(DetailView):
 			form.instance.article=blog.Articles.objects.get(slug=slug)
 			form.save()
 
-			return redirect('blog:detail')
+			return HttpResponseRedirect(reverse('blog:detail', args=[str(slug)]))
 
 class DeleteArticle(DeleteView):
 	model = blog.Articles
@@ -106,9 +134,9 @@ class AddComment(LoginRequiredMixin, CreateView):
 		#form.instance.article = blog.Comments.objects.get(slug=)
 		return super().form_valid(form)
 
-class AddLike(LoginRequiredMixin, CreateView):
+"""class AddLike(LoginRequiredMixin, CreateView):
 	model = blog.Likes
-	template_name = "blogs/like_add.html"
+	template_name = "blogs/like_add.html"""
 	
 
 
@@ -133,3 +161,42 @@ class ArticleSearch(ListView):
             )
 
         return result
+
+
+def photo_upload(request):
+    form = forms.PhotoForm()
+    if request.method == 'POST':
+        form = forms.PhotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = form.save(commit=False)
+            # set the uploader to the user before saving the model
+            photo.uploader = request.user
+            # now we can save
+            photo.save()
+            return redirect('blog:photo_view')
+    return render(request, 'blogs/photo_upload.html', context={'form': form})
+
+
+def photo_view(request):
+    photos = blog.Photo.objects.all()
+    return render(request, 'blogs/photo_view.html', context={'photos': photos})
+
+
+def article_like(request, slug):
+	article = blog.Articles.objects.get(slug=slug)
+	if article.likes.filter(id=request.user.id).exists():
+		article.likes.remove(request.user)
+	else:
+		article.likes.add(request.user)
+
+	return HttpResponseRedirect(reverse('blog:detail', args=[str(slug)]))
+
+
+def article_save(request, slug):
+	article = blog.Articles.objects.get(slug=slug)
+	if article.enregistrements.filter(id=request.user.id).exists():
+		article.enregistrements.remove(request.user)
+	else:
+		article.enregistrements.add(request.user)
+
+	return HttpResponseRedirect(reverse('blog:detail', args=[str(slug)]))

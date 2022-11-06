@@ -1,29 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<!--div class="row">
-  <div class="leftcolumn">
-    
-
-    <div class="card">
-       
-      <div class="fakeimg" style="height:200px;">Image</div>
-    </div>
-   
-  </div>
-</div-->
-
-
+<section id="blog" class="flex items-center justify-center">
 {% for article in articles %}
-<div class="block p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+<div class="flex space-x-4 p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-teal-500 dark:border-gray-700 dark:hover:bg-gray-700 py-2 px-3">
     <a href="{% url 'blog:detail' slug=article.slug %}">
-        <img class="rounded-t-lg" src="/docs/images/blog/image-1.jpg" alt="" />
+        <img class="rounded-t-lg" src="" alt="" />
     </a>
     <div class="p-5">
         <a href="{% url 'blog:detail' slug=article.slug %}">
             <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ article.title }}</h5>
         </a>
-        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{{ article.contenu|truncatewords:20}}</p>
+        {%if article.author == user%}
+            <a href="{% url 'blog:edit' slug=article.slug%}">Modifier</a>
+            <a href="{% url 'blog:delete' slug=article.slug%}">Supprimer</a>
+        {%endif%}
+        <p class="mb-3 font-normal text-black dark:text-black">{{ article.contenu|truncatewords:20}}</p>
         <div class="flex items-center">
       <img class="w-10 h-10 rounded-full mr-4" src="/img/jonathan.jpg" alt="Avatar of Author">
       <div class="text-sm">
@@ -40,5 +32,5 @@
 {% empty %}
       <div class="text-gray-900 font-bold text-xl mb-2">Pas d'article</div>
 {%endfor%}
-
+</section>
 {% endblock %}

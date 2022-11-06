@@ -5,11 +5,16 @@
 {%block title%}Inscription{%endblock title%}
 
 {%block content%}
-	<h2>Inscription</h2>
-	<form method="post">
-		{{form|crispy}}
+
+
+<div class="p-4 w-full max-w-sm bg-white rounded-lg border border-blue-200 shadow-md sm:p-6 md:p-8 dark:bg-blue-800 dark:border-blue-700 items-center justify-center">
+    <form class="space-y-6" method="post">
+        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Inscription</h5>
+        {{form|crispy}}
 		{%csrf_token%}
-		<button type="submit"> Enregistrer</button>
-	</form>
+        <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Enregistrer</button>
+    </form>
+</div>
+
 
 {%endblock content%}

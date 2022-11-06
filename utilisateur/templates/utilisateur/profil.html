@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
 {%block content%}
 <h1>Profil</h1>
+<p>Nom d'utilisateur: {{user.username}}</p>
+<p>Nom: {{user.first_name}}</p>
+<p>Prenom: {{user.last_name}}</p>
+<p>Email: {{user.email}}</p>
+<p>Role: {{user.role}}</p>
+<a href="{% url 'user:user_update' pk=user.id%}">Mettre a jour mes informations personnelles</a>
 {%endblock%}

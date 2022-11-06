@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Mise a jour
+{% endblock %}
+
+{% block content %}
+
+    <h1>Mise a jour des informations personnelles</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Éditer">
+    </form>
+
+{% endblock %}

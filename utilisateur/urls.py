@@ -24,4 +24,6 @@ urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
     path('inscription/', views.inscription, name='inscription'),
     path('profil/', views.profil, name='profil'),
+    path('profil/update/<int:pk>/', views.UpdateUser.as_view(), name='user_update'),
+
 ]

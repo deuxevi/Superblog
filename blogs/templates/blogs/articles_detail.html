@@ -6,28 +6,50 @@
 {% endblock %}
 
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-12 card mb-4  mt-3 left  top">
-      <div class="card-body">
-        <h1>{{ article.title }}</h1>
-        <p class=" text-muted">{{ article.author }} | {{ article.date_pub|date:'j F Y' }} aime par {{likes}} internaute(s)</p>
-        <p class="mb-3 font-light text-gray-500 dark:text-gray-400 ">{{article.contenu|linebreaks|safe }}</p>
-
+        <h5 class="flex items-center justify-center mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-dark ">{{ article.title }}</h5><br>
+         <strong class="text-secondary">{{ article.author }} | {{ article.date_pub|date:'j F Y' }}  | {{likes }} Like{{likes|pluralize }}</strong>
+        <p class="text-xl font-normal text-gray-900 dark:text-white">{{article.contenu|linebreaks|safe }}</p><br>
+        {%if article.date_pub != article.date_mod%}
+            <p>Mise a jour: {{article.date_mod|date:'j F Y'}}</p>
+        {% endif %}
 
                             
 {% if user.is_authenticated%}
+    <div class="flex">
+    <form action="{% url 'blog:like' object.slug %}" method="POST">
+    {% csrf_token %}
+
+    {% if liked %}
+    <button type="submit" name="blogpost_id" value="{{object.slug}}" class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">Unlike</button>
+    {% else %}
+    <button type="submit" name="blogpost_id" value="{{object.slug}}" class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">Like</button>
+    {% endif %}
+  </form>
+  <form action="{% url 'blog:save' object.slug %}" method="POST">
+      {%csrf_token%}
+
+      {%if saved%}
+        <button type="submit" name="blogpost_id" value="{{object.slug}}" class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">Unsave</button>
+    {%else%}
+        <button type="submit" name="blogpost_id" value="{{object.slug}}" class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">Save</button>
+    {%endif%}
+  </form>
+</div>
+
      <h1>Ajouter un commentaire</h1>
     <form method="POST">
+        <div class="input-group">
         {% csrf_token %}
         {{ commentForm|crispy }}
+    </div>
         
-        <button type="submit">Envoyer</button>
+        <button type="submit" class="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 hover:bg-blue-800">Post</button>
     </form>
+
     <br><p>{{likeForm|crispy}}</p><br><p>{{enregistrementForm|crispy}}</p>
     {%else%}    
                 <div class="lg:ml-5 ml-auto">
-                    <a href="{% url 'user:login'%}"
+                    <a href="{% url 'user:login'%}?next={{request.path}}"
                         class=" text-sm  font-semibold hover:text-blue-500 transition flex items-center">
                         <span class="mr-2">
                             <i class="far fa-user"></i>
@@ -36,13 +58,11 @@
                 </div>
             {%endif%}
                 {% for comment in comments %}
-                    <p>{{comment}}</p><br>
+                    <div class="flex space-x-4 p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-teal-500 dark:border-gray-700 dark:hover:bg-gray-700 py-2 px-3">
+
+                        <p>{{comment.internaute}}:{{comment}}</p>
+                    </div>
                 {%empty%}
                     <p>Pas de commentaire</p>
                 {%endfor%}
-      </div>
-    </div>
-  </div>
-</div>
-
 {% endblock %}
