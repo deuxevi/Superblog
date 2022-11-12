@@ -9,6 +9,7 @@ urlpatterns = [
 	path('mes-articles/', BlogArticles.as_view(), name='mesArticles'),
 	path('photo/view/', photo_view, name='photo_view'),
 	path('brouillons/', Brouillons.as_view(), name='brouillons'),
+	path('enregistrements/', Enregistrements.as_view(), name='save'),
 	path('create/', CreateArticle.as_view(), name="add"),
 	path('photo/upload/', photo_upload, name='photo_upload'),
 	path('addcomment/', AddComment.as_view(), name="comment"),

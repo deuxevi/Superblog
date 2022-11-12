@@ -47,3 +47,8 @@ class UpdateUser(UpdateView):
 	model = models.User
 	template_name = "utilisateur/user_edit.html"
 	fields = ['username', 'email', 'first_name', 'last_name']
+
+class UpdatePassWord(UpdateView):
+	model = models.User
+	template_name = "utilisateur/user_edit"
+	fields = ['password']

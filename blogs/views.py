@@ -42,14 +42,15 @@ class Brouillons(ListView):
 
 		return queryset.filter(author=self.request.user).filter(published=False)
 
-"""class Enregistrements(ListView):
-	model = blog.Enregistrements
+class Enregistrements(ListView):
+	model = blog.Articles
 	context_object_name = "articles"
 
-	def get_queryset(self):
-		queryset = super().get_queryset()
+	def get_context_data(self, **kwargs):
+		context = super().get_context_data(**kwargs)
+		context['articles'] = self.request.user.article_save.all()
 
-		return queryset.filter(owner=self.request.user)"""
+		return context
 			
 
 class CreateArticle(LoginRequiredMixin, CreateView):
@@ -57,28 +58,26 @@ class CreateArticle(LoginRequiredMixin, CreateView):
 	template_name = "blogs/article_create.html"
 	fields = ["title", 'theme', 'contenu', 'published']
 
-	"""def get_context_data(self, **kwargs):
+	def get_context_data(self, **kwargs):
 		context = super().get_context_data(**kwargs)
 		context["photoForm"] = forms.PhotoForm()
 
 		return context
 
-	def post(self, request, slug):
+	def post(self, request,):
 		photoForm = forms.PhotoForm(request.POST, request.FILES)
-		articleForm = self.form(request.POST)
-		if photoform.is_valid():
+		if photoForm.is_valid():
 			photo = photoForm.save(commit=False)
             # set the uploader to the user before saving the model
 			photo.uploader = request.user
             # now we can save
-			photo.save()
-			articleForm.instance.photo = photo
-			articleForm.save()
-
+			return redirect("blog:mesArticles")
 
 	def form_valid(self, form):
 		form.instance.author = self.request.user
-		return super().form_valid(form)"""
+		form.instance.photo = blog.Photo.objects.get(uploader=request.user)
+		form.save()
+		return super().form_valid(form)
 
 
 
@@ -134,9 +133,6 @@ class AddComment(LoginRequiredMixin, CreateView):
 		#form.instance.article = blog.Comments.objects.get(slug=)
 		return super().form_valid(form)
 
-"""class AddLike(LoginRequiredMixin, CreateView):
-	model = blog.Likes
-	template_name = "blogs/like_add.html"""
 	
 
 

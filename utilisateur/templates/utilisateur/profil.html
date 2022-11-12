@@ -6,5 +6,11 @@
 <p>Prenom: {{user.last_name}}</p>
 <p>Email: {{user.email}}</p>
 <p>Role: {{user.role}}</p>
-<a href="{% url 'user:user_update' pk=user.id%}">Mettre a jour mes informations personnelles</a>
+<a href="{% url 'user:user_update' pk=user.id%}">Mettre a jour mes informations personnelles</a><br>
+<a href="{% url 'user:password_update' pk=user.id%}">Changer de mot de passe</a><br>
+{% if user.is_createur%}
+<a href="#">Devenir simple internaute</a>
+{%else%}
+<a href="#">Devenir Bloggeur</a>
+{%endif%}
 {%endblock%}

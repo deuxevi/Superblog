@@ -9,6 +9,7 @@
     <h1>Ajouter un article</h1>
 
     <form method="post"  enctype="multipart/form-data">
+        {{photoForm}}
         {{ form }}
         {% csrf_token %}
         <input type="submit" value="Créer">

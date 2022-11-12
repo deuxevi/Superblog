@@ -14,7 +14,7 @@ class User(AbstractUser):
 		return self.username
 
 	def is_createur(self):
-		return self.role == 'Créateur'
+		return self.role == 'BLOGGEUR'
 
 
 	
