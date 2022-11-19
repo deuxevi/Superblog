@@ -1,5 +1,5 @@
 from django.forms import ModelForm, TextInput
-from blogs.models import Comments, Photo
+from blogs.models import Comments
 
 
 class CommentForm(ModelForm):
@@ -12,14 +12,3 @@ class CommentForm(ModelForm):
 		   'placeholder':"Write a comment...",
 		    'required':""})}
 
-
-"""class EnregistrementForm(ModelForm):
-	class Meta:
-		model = Enregistrements
-		fields=['status']"""
-
-
-class PhotoForm(ModelForm):
-	class Meta:
-		model = Photo
-		fields = ['image', 'caption']

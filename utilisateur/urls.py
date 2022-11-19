@@ -26,5 +26,6 @@ urlpatterns = [
     path('profil/', views.profil, name='profil'),
     path('profil/update/<int:pk>/', views.UpdateUser.as_view(), name='user_update'),
     path('password/<int:pk>/', views.UpdatePassWord.as_view(), name='password_update'),
+    path('avatar/<int:pk>/', views.UpdateAvatar.as_view(), name='avatar_update'),
 
 ]

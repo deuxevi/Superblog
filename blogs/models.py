@@ -7,11 +7,6 @@ from utilisateur.models import User
 
 
 
-class Photo(models.Model):
-    image = models.ImageField()
-    caption = models.CharField(max_length=128, blank=True)
-    uploader = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now_add=True)
 
 class Themes(models.Model):
 	theme=models.CharField(max_length=50, verbose_name='theme de l\'article')
@@ -19,9 +14,15 @@ class Themes(models.Model):
 	def __str__(self):
 		return self.theme
 
+class Tags(models.Model):
+	tag = models.CharField(max_length=50)
+
+	def __str__(self):
+		return self.tag
+
 
 class Articles(models.Model):
-	photo = models.ForeignKey(Photo, null=True, on_delete=models.SET_NULL, blank=True)
+	image = models.ImageField(null=True, blank=True, default=None)
 	title=models.CharField(max_length=100, verbose_name='titre de l\'article')
 	contenu=models.TextField(verbose_name='Contenu')
 	author=models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
@@ -29,9 +30,10 @@ class Articles(models.Model):
 	date_pub=models.DateTimeField(auto_now_add=True)
 	date_mod=models.DateTimeField(auto_now=True)
 	theme=models.ForeignKey(Themes, on_delete=models.SET_NULL, null=True, blank=True)
+	tags=models.ManyToManyField(Tags, related_name='articles_tag', blank=True)
 	slug = models.SlugField(max_length=255, blank=True)
-	likes = models.ManyToManyField(User, related_name='article_like')
-	enregistrements = models.ManyToManyField(User, related_name='article_save')
+	likes = models.ManyToManyField(User, related_name='article_like', blank=True)
+	enregistrements = models.ManyToManyField(User, related_name='article_save', blank=True)
 
 
 	class Meta:
@@ -54,10 +56,6 @@ class Articles(models.Model):
 	def nb_likes(self):
 		return self.likes.count()
 
-"""class Likes(models.Model):
-	status=models.BooleanField(verbose_name='Like')
-	article=models.ForeignKey(Articles, on_delete=models.CASCADE)
-	user=models.ForeignKey(User, on_delete=models.CASCADE)"""
 
 class Comments(models.Model):
 	article=models.ForeignKey(Articles, on_delete=models.CASCADE)
@@ -71,10 +69,4 @@ class Comments(models.Model):
 
 	def __str__(self):
 		return self.contenu
-
-"""class Enregistrements(models.Model):
-	status=models.BooleanField(verbose_name='Save')
-	article=models.ForeignKey(Articles, on_delete=models.CASCADE)
-	owner=models.ForeignKey(User, on_delete=models.CASCADE)"""
-
 

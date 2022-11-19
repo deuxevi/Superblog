@@ -2,10 +2,15 @@
 
 {% block content %}
 <section id="blog" class="flex items-center justify-center">
+
+<div class="flex flex-wrap ">
 {% for article in articles %}
-<div class="flex space-x-4 p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-teal-500 dark:border-gray-700 dark:hover:bg-gray-700 py-2 px-3 mb-3 ml-2 mr-2 mt-3">
+<div class="space-x-4 p-6 max-w-sm bg-white rounded-lg border border-gray-200 shadow-md hover:bg-gray-100 dark:bg-teal-500 dark:border-gray-700 dark:hover:bg-gray-700 py-2 px-3 mb-3 ml-2 mr-2 mt-3">
     <a href="{% url 'blog:detail' slug=article.slug %}">
-        <img class="rounded-t-lg" src="" alt="" />
+       {%if article.image%}
+         <img class="h-48 w-full object-cover md:h-48 md:w-full" width="200" height="200" src="{{article.image.url}}">
+         {%endif%}
+
     </a>
     <div class="p-5">
         <a href="{% url 'blog:detail' slug=article.slug %}">
@@ -32,5 +37,6 @@
 {% empty %}
       <div class="text-gray-900 font-bold text-xl mb-2">Pas d'article</div>
 {%endfor%}
+</div>
 </section>
 {% endblock %}

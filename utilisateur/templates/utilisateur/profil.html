@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 {%block content%}
 <h1>Profil</h1>
+{%if user.profile_photo%}
+         <img class="h-48 w-full object-cover md:h-full md:w-48" width="200" height="200" src="{{user.profile_photo.url}}">
+{%endif%}
 <p>Nom d'utilisateur: {{user.username}}</p>
 <p>Nom: {{user.first_name}}</p>
 <p>Prenom: {{user.last_name}}</p>
@@ -8,6 +11,7 @@
 <p>Role: {{user.role}}</p>
 <a href="{% url 'user:user_update' pk=user.id%}">Mettre a jour mes informations personnelles</a><br>
 <a href="{% url 'user:password_update' pk=user.id%}">Changer de mot de passe</a><br>
+<a href="{% url 'user:avatar_update' pk=user.id%}">Changer d'avatar</a><br>
 {% if user.is_createur%}
 <a href="#">Devenir simple internaute</a>
 {%else%}

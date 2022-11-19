@@ -43,6 +43,11 @@ def logout_user(request):
 def profil(request):
 	return render (request, 'utilisateur/profil.html')
 
+class UpdateAvatar(UpdateView):
+	model = models.User
+	template_name = "utilisateur/user_edit.html"
+	fields = ["profile_photo"]
+
 class UpdateUser(UpdateView):
 	model = models.User
 	template_name = "utilisateur/user_edit.html"
@@ -50,5 +55,5 @@ class UpdateUser(UpdateView):
 
 class UpdatePassWord(UpdateView):
 	model = models.User
-	template_name = "utilisateur/user_edit"
+	template_name = "utilisateur/user_edit.html"
 	fields = ['password']

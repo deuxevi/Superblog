@@ -56,27 +56,11 @@ class Enregistrements(ListView):
 class CreateArticle(LoginRequiredMixin, CreateView):
 	model = blog.Articles
 	template_name = "blogs/article_create.html"
-	fields = ["title", 'theme', 'contenu', 'published']
+	fields = ["image", "title", 'theme', 'contenu', 'tags', 'published']
 
-	def get_context_data(self, **kwargs):
-		context = super().get_context_data(**kwargs)
-		context["photoForm"] = forms.PhotoForm()
-
-		return context
-
-	def post(self, request,):
-		photoForm = forms.PhotoForm(request.POST, request.FILES)
-		if photoForm.is_valid():
-			photo = photoForm.save(commit=False)
-            # set the uploader to the user before saving the model
-			photo.uploader = request.user
-            # now we can save
-			return redirect("blog:mesArticles")
 
 	def form_valid(self, form):
 		form.instance.author = self.request.user
-		form.instance.photo = blog.Photo.objects.get(uploader=request.user)
-		form.save()
 		return super().form_valid(form)
 
 
@@ -84,7 +68,7 @@ class CreateArticle(LoginRequiredMixin, CreateView):
 class EditArticle(UpdateView):
 	model = blog.Articles
 	template_name = "blogs/article_edit.html"
-	fields = ["title", "theme", "contenu"]
+	fields = ["image", "title", "theme", "contenu", "published"]
 
 
 class DetailArticle(DetailView):
@@ -159,23 +143,6 @@ class ArticleSearch(ListView):
         return result
 
 
-def photo_upload(request):
-    form = forms.PhotoForm()
-    if request.method == 'POST':
-        form = forms.PhotoForm(request.POST, request.FILES)
-        if form.is_valid():
-            photo = form.save(commit=False)
-            # set the uploader to the user before saving the model
-            photo.uploader = request.user
-            # now we can save
-            photo.save()
-            return redirect('blog:photo_view')
-    return render(request, 'blogs/photo_upload.html', context={'form': form})
-
-
-def photo_view(request):
-    photos = blog.Photo.objects.all()
-    return render(request, 'blogs/photo_view.html', context={'photos': photos})
 
 
 def article_like(request, slug):

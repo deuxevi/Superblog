@@ -11,9 +11,10 @@
 	<title>{%block title%} {%endblock%}</title>
 </head>
 <body class="bg-gray-50 font-serif leading-normal tracking-normal">
+	{%include 'nav.html'%}
 	<div class="container mx-auto">
 		
-		{%include 'nav.html'%}
+		
 	
 		<section>
 		{%block content%} {%endblock%}
