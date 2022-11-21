@@ -1,19 +1,22 @@
 {% extends 'base.html' %}
 
+{%load crispy_forms_tags %}
+
 {% block title %}
     Ajouter un article
 {% endblock %}
 
 {% block content %}
 
+<div class="p-4 w-full max-w-sm rounded-lg shadow-md sm:p-6 md:p-8">
     <h1>Ajouter un article</h1>
 
     <form method="post"  enctype="multipart/form-data">
         {{photoForm}}
-        {{ form }}
+        {{ form|crispy }}
         {% csrf_token %}
         <input type="submit" value="Créer">
     </form>
-
+</div>
 
 {% endblock %}
