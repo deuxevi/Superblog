@@ -1,20 +1,24 @@
 {% extends 'base.html' %}
 {%block content%}
-<h1>Profil</h1>
-{%if user.profile_photo%}
-         <img class="h-48 w-full object-cover md:h-full md:w-48" width="200" height="200" src="{{user.profile_photo.url}}">
-{%endif%}
-<p>Nom d'utilisateur: {{user.username}}</p>
-<p>Nom: {{user.first_name}}</p>
-<p>Prenom: {{user.last_name}}</p>
-<p>Email: {{user.email}}</p>
-<p>Role: {{user.role}}</p>
-<a href="{% url 'user:user_update' pk=user.id%}">Mettre a jour mes informations personnelles</a><br>
-<a href="{% url 'user:password_update' pk=user.id%}">Changer de mot de passe</a><br>
-<a href="{% url 'user:avatar_update' pk=user.id%}">Changer d'avatar</a><br>
-{% if user.is_createur%}
-<a href="#">Devenir simple internaute</a>
-{%else%}
-<a href="#">Devenir Bloggeur</a>
-{%endif%}
+
+<div class="flex items-center justify-center">
+<div class="w-full max-w-sm bg-white border border-gray-200 rounded-lg shadow-md dark:bg-blue-500 dark:border-gray-700">
+    <div class="flex flex-col items-center pb-10 mt-6 mb-6">
+        <h5 class="text-xl font-medium text-gray-900 dark:text-white">Profil</h5>
+        {%if user.profile_photo%}
+        <a href="{% url 'user:avatar_update' pk=user.id%}"><img class="w-24 h-24 mb-3 mt-3 ml-3 mr-3 rounded-full shadow-lg"  width="200" height="200" src="{{user.profile_photo.url}}"></a>
+        {%else%}
+        <a href="{% url 'user:set_avatar' pk=user.id%}"><svg class="w-24 h-24 mb-3 mt-3 ml-3 mr-3 rounded-full shadow-lg"  fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg></a>
+        {%endif%}
+        <a href="{% url 'user:user_update' pk=user.id%}"><h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-black">{{user.first_name}} {{user.last_name}} AKA {{user.username}}</h5></a>
+        <a href="{% url 'user:role_update' pk=user.id%}"><span class="text-sm text-gray-600 dark:text-gray-600">{{user.role}}</span></a>
+        <span class="text-2xl text-gray-900 dark:text-gray-900">{{user.email}}</span>
+        <div class="flex mt-4 space-x-3 md:mt-6">
+            <a href="{% url 'user:password_update' pk=user.id%}" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Change password</a>
+            <!--a href="#" class="inline-flex items-center px-4 py-2 text-sm font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">Message</a-->
+        </div>
+    </div>
+</div>
+</div>
+
 {%endblock%}

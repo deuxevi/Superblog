@@ -27,5 +27,7 @@ urlpatterns = [
     path('profil/update/<int:pk>/', views.UpdateUser.as_view(), name='user_update'),
     path('password/<int:pk>/', views.UpdatePassWord.as_view(), name='password_update'),
     path('avatar/<int:pk>/', views.UpdateAvatar.as_view(), name='avatar_update'),
+    path('setavatar/<int:pk>', views.SetAvatar.as_view(), name="set_avatar"),
+    path('role/<int:pk>', views.UpdateRole.as_view, name='role_update'),
 
 ]

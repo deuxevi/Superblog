@@ -1,11 +1,13 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView, TemplateView
+from django.views import View
 import operator
 from functools import reduce
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import get_object_or_404
 
 import utilisateur.models as user
@@ -13,9 +15,17 @@ import blogs.models as blog
 import blogs.forms as forms
 
 
+
+class Home(View):
+
+	def get(self, request, *args, **kwargs):
+		return HttpResponse("hello world")
+		
+
 class BlogHome(ListView):
 	model = blog.Articles
 	context_object_name = "articles"
+	#paginate_by = 2
 
 	def get_queryset(self):
 		queryset = super().get_queryset()
@@ -33,7 +43,8 @@ class BlogArticles(ListView):
 
 		return queryset.filter(author=self.request.user).filter(published=True)
 
-class Brouillons(ListView):
+class Brouillons(LoginRequiredMixin, ListView):
+	login_url= 'user:login'
 	model = blog.Articles
 	context_object_name = "articles"
 
@@ -42,7 +53,8 @@ class Brouillons(ListView):
 
 		return queryset.filter(author=self.request.user).filter(published=False)
 
-class Enregistrements(ListView):
+class Enregistrements(LoginRequiredMixin,ListView):
+	login_url= 'user:login'
 	model = blog.Articles
 	context_object_name = "articles"
 
@@ -54,6 +66,7 @@ class Enregistrements(ListView):
 			
 
 class CreateArticle(LoginRequiredMixin, CreateView):
+	login_url= 'user:login'
 	model = blog.Articles
 	template_name = "blogs/article_create.html"
 	fields = ["image", "title", 'theme', 'contenu', 'tags', 'published']
@@ -65,7 +78,8 @@ class CreateArticle(LoginRequiredMixin, CreateView):
 
 
 
-class EditArticle(UpdateView):
+class EditArticle(LoginRequiredMixin,UpdateView):
+	login_url= 'user:login'
 	model = blog.Articles
 	template_name = "blogs/article_edit.html"
 	fields = ["image", "title", "theme", "contenu", "published"]
@@ -101,13 +115,15 @@ class DetailArticle(DetailView):
 
 			return HttpResponseRedirect(reverse('blog:detail', args=[str(slug)]))
 
-class DeleteArticle(DeleteView):
+class DeleteArticle(LoginRequiredMixin,DeleteView):
+	login_url= 'user:login'
 	model = blog.Articles
 	succes_url = reverse_lazy('blog:home')
 
 
 
 class AddComment(LoginRequiredMixin, CreateView):
+	login_url= 'user:login'
 	model = blog.Comments
 	template_name = "blogs/articles_detail.html"
 	fields = ["contenu"]
@@ -137,14 +153,16 @@ class ArticleSearch(ListView):
                 reduce(operator.and_,
                        (Q(title__icontains=q) for q in query_list)) |
                 reduce(operator.and_,
-                       (Q(contenu__icontains=q) for q in query_list))
-            )
+                       (Q(contenu__icontains=q) for q in query_list)) |
+				reduce(operator.and_,
+						(Q(theme__theme__icontains=q) for q in query_list))	
+            ).filter(published=True)
 
         return result
 
 
 
-
+@login_required(login_url= 'user:login')
 def article_like(request, slug):
 	article = blog.Articles.objects.get(slug=slug)
 	if article.likes.filter(id=request.user.id).exists():
@@ -154,7 +172,7 @@ def article_like(request, slug):
 
 	return HttpResponseRedirect(reverse('blog:detail', args=[str(slug)]))
 
-
+@login_required(login_url= 'user:login')
 def article_save(request, slug):
 	article = blog.Articles.objects.get(slug=slug)
 	if article.enregistrements.filter(id=request.user.id).exists():

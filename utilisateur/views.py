@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, CreateView
 
 from . import forms
 from . import models
@@ -43,6 +43,12 @@ def logout_user(request):
 def profil(request):
 	return render (request, 'utilisateur/profil.html')
 
+class SetAvatar(CreateView):
+	model = models.User
+	template_name: str = "utilisateur/user_edit.html"
+	fields = ["profile_photo"]
+
+	
 class UpdateAvatar(UpdateView):
 	model = models.User
 	template_name = "utilisateur/user_edit.html"
@@ -57,3 +63,8 @@ class UpdatePassWord(UpdateView):
 	model = models.User
 	template_name = "utilisateur/user_edit.html"
 	fields = ['password']
+
+class UpdateRole(UpdateView):
+	model = models.User
+	template_name = "utilisateur/user_edit.html"
+	fields = ['role']

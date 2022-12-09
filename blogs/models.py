@@ -55,6 +55,9 @@ class Articles(models.Model):
 
 	def nb_likes(self):
 		return self.likes.count()
+	
+	def ispublished(self):
+		return self.published
 
 
 class Comments(models.Model):

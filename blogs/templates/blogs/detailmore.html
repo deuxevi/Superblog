@@ -1,6 +1,6 @@
 {%load crispy_forms_tags %} 
 
-{% if user.is_authenticated%}
+{% if user.is_authenticated and article.ispublished%}
     <div class="flex">
     <form action="{% url 'blog:like' object.slug %}" method="POST">
     {% csrf_token %}
@@ -33,6 +33,8 @@
     </form>
 
     <br><p>{{likeForm|crispy}}</p><br><p>{{enregistrementForm|crispy}}</p>
+    {%elif not article.ispublished%}
+
     {%else%}    
                 <div class="lg:ml-5 ml-auto">
                     <a href="{% url 'user:login'%}?next={{request.path}}"
