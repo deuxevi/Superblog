@@ -10,18 +10,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{%block title%} {%endblock%}</title>
 </head>
-<body class="bg-gray-50 font-serif leading-normal tracking-normal">
+<body>
 	{%include 'nav.html'%}
-	<div class="container mx-auto">
 		
 		
 	
-		<section>
+		<section class="content">
 		{%block content%} {%endblock%}
 		</section>
 	
-
-		<footer class="border-t py-4 static bottom-0">
+		<a href="{% url 'blog:email' %}"> Share this post </a>
+		<footer>
         	<p class=" text-sm text-center">Copyright © 2022 <span class="font-semibold">SuperBlog</span>
             All Rights Reserved</p>
     	</footer>
