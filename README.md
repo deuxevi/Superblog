@@ -23,9 +23,9 @@ Suivez les étapes ci-dessous pour installer et exécuter l'application Superblo
 ### Étapes d'installation
 
 1. Clonez le dépôt depuis GitHub, activez l'environnement virtuel et démarrez le serveur de développement :
-  git clone https://github.com/deuxevi/Superblog.git
-  cd Superblog
-  source env/bin/activate  # Sur Windows, utilisez `env\\Scripts\\activate`
-  python manage.py runserver
+  * git clone https://github.com/deuxevi/Superblog.git
+  * cd Superblog
+  * source env/bin/activate  # Sur Windows, utilisez `env\\Scripts\\activate`
+  * python manage.py runserver
 
 2. Ouvrez votre navigateur web et accédez à l'URL http://127.0.0.1/8000
